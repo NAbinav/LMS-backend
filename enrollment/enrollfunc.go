@@ -29,18 +29,18 @@ func EnrollUser(ctx context.Context, userID int, courseID int) error {
 	return nil
 }
 
-func GetAllEnrolledCourse(ctx context.Context, userID int) ([]schema.Enrollment, error) {
-	query := "SELECT * FROM ENROLLMENTS WHERE user_id=$1"
+func GetAllEnrolledCourse(ctx context.Context, userID int) ([]schema.Courses, error) {
+	query := "SELECT c.id,c.title,c.description,c.instructor_id,c.credits,c.created_at FROM enrollments e join courses c on e.course_id=c.id WHERE e.user_id=$1"
 	rows, err := db.DB.Query(ctx, query, userID)
 	if err != nil {
-		return []schema.Enrollment{}, err
+		return []schema.Courses{}, err
 	}
 	defer rows.Close()
-	var courses []schema.Enrollment
+	var courses []schema.Courses
 	for rows.Next() {
-		var course_row schema.Enrollment
-		if err := rows.Scan(&course_row.UserId, &course_row.CourseID, &course_row.EnrollDate, &course_row.Status); err != nil {
-			return []schema.Enrollment{}, err
+		var course_row schema.Courses
+		if err := rows.Scan(&course_row.Id, &course_row.Title, &course_row.Description, &course_row.InstructorID, &course_row.Credits, &course_row.CreatedAt); err != nil {
+			return []schema.Courses{}, err
 		}
 		courses = append(courses, course_row)
 	}

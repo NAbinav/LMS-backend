@@ -43,7 +43,13 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "User registered successfully"})
+	token, err := jwt.Create_JWT(User.Email)
+	if err != nil {
+		c.JSON(401, "unauthorised")
+		return
+	}
+	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+	c.JSON(200, gin.H{"message": "User registration successful", "id": User.Id, "role": User.Role})
 }
 
 func LoginHandler(c *gin.Context) {
