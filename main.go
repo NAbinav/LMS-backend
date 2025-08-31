@@ -4,16 +4,15 @@ import (
 	"dbms/course"
 	"dbms/db"
 	"dbms/handler"
-	"time"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func main() {
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // frontend URL
+		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -36,6 +35,7 @@ func main() {
 	r.GET("/getcourse", course.GetCourse)
 	r.GET("/listcourses", course.ListCourses)
 	r.PUT("/updatecourse", course.UpdateCourse)
-	// r.POST("/enroll",enroll)
+	r.POST("/enroll", handler.EnrollUserHandler)
+	r.GET("/getenrolled", handler.GetEnrolled)
 	r.Run(":8080")
 }

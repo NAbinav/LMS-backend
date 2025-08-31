@@ -2,6 +2,7 @@ package handler
 
 import (
 	"dbms/db"
+	"dbms/helper"
 	"dbms/jwt"
 	"dbms/user"
 	"fmt"
@@ -58,7 +59,7 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	ctx := c.Request.Context()
-	id,role,err := user.LoginUser(ctx, User.Email, User.Password)// dv change
+	id, role, err := user.LoginUser(ctx, User.Email, User.Password) // dv change
 	if err != nil {
 		fmt.Println("Error logging in user:", err)
 		c.JSON(401, gin.H{"error": "Invalid email or password"})
@@ -70,42 +71,17 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
-	c.JSON(200, gin.H{"message": "Login successful", "id": id, "role":role}) //dv change
+	c.JSON(200, gin.H{"message": "Login successful", "id": id, "role": role}) //dv change
 }
 
 func Getuser(c *gin.Context) {
-	ctx := c.Request.Context()
-	token, err := c.Cookie("token")
-	fmt.Println(token)
+	user, err := helper.WhoamI(c)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Wrong token"})
+		c.JSON(401, err)
 		return
 	}
-	email, err := jwt.Verify_JWT(token)
-	fmt.Println(email)
-	if err != nil {
-		c.JSON(400, gin.H{"error": "f off"})
-		return
-	}
-	query := "SELECT * FROM users WHERE email = $1"
-	row := db.DB.QueryRow(ctx, query, email)
-
-	var user struct {
-		Id        int       `json:"id"`
-		Name      string    `json:"name"`
-		Email     string    `json:"email"`
-		Password  string    `json:"password"`
-		Role      string    `json:"role"`
-		CreatedAt time.Time `json:"created_at"`
-	}
-
-	if err := row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.Role, &user.CreatedAt); err != nil {
-		fmt.Println("Error fetching user:", err)
-		c.JSON(404, gin.H{"error": "User not found"})
-		return
-	}
-
 	c.JSON(200, user)
+	return
 }
 
 func ListUserFromRole(c *gin.Context) {

@@ -3,6 +3,7 @@ package enrollment
 import (
 	"context"
 	"dbms/db"
+	"dbms/schema"
 	"fmt"
 )
 
@@ -26,4 +27,22 @@ func EnrollUser(ctx context.Context, userID int, courseID int) error {
 		return err
 	}
 	return nil
+}
+
+func GetAllEnrolledCourse(ctx context.Context, userID int) ([]schema.Enrollment, error) {
+	query := "SELECT * FROM ENROLLMENTS WHERE user_id=$1"
+	rows, err := db.DB.Query(ctx, query, userID)
+	if err != nil {
+		return []schema.Enrollment{}, err
+	}
+	defer rows.Close()
+	var courses []schema.Enrollment
+	for rows.Next() {
+		var course_row schema.Enrollment
+		if err := rows.Scan(&course_row.UserId, &course_row.CourseID, &course_row.EnrollDate, &course_row.Status); err != nil {
+			return []schema.Enrollment{}, err
+		}
+		courses = append(courses, course_row)
+	}
+	return courses, nil
 }

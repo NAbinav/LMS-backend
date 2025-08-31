@@ -26,8 +26,8 @@ type Courses struct {
 }
 
 func CreateCourseDB(ctx context.Context, id int, title string, description string, instructorID int, credits int) error {
-	query := "INSERT INTO courses (id, title, description, instructor_id, credits) VALUES ($1, $2, $3, $4, $5)"
-	_, err := db.DB.Exec(ctx, query, id, title, description, instructorID, credits)
+	query := "INSERT INTO courses (title, description, instructor_id, credits) VALUES ($1, $2, $3, $4)"
+	_, err := db.DB.Exec(ctx, query, title, description, instructorID, credits)
 	if err != nil {
 		fmt.Println("Error creating course:", err)
 		return err
@@ -39,7 +39,11 @@ func CreateCourseDB(ctx context.Context, id int, title string, description strin
 func CreateCourse(c *gin.Context) {
 	ctx := c.Request.Context()
 	var Course Course_type
-	err := CreateCourseDB(ctx, Course.Id, Course.Title, Course.Description, Course.InstructorID, Course.Credits)
+	err := c.ShouldBindJSON(&Course)
+	if err != nil {
+		c.JSON(400, "Provide body")
+	}
+	err = CreateCourseDB(ctx, Course.Id, Course.Title, Course.Description, Course.InstructorID, Course.Credits)
 	if err != nil {
 		fmt.Println("Error creating course:", err)
 		c.JSON(500, gin.H{"error": "Failed to create course"})
