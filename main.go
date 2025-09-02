@@ -3,7 +3,9 @@ package main
 import (
 	"dbms/course"
 	"dbms/db"
+	"dbms/enrollment"
 	"dbms/handler"
+	"dbms/quiz"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -25,17 +27,23 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.String(200, "Hello, World!")
 	})
+	r.GET("/role", handler.ListUserFromRole)
 	r.POST("/register", handler.RegisterUser)
 	r.POST("/login", handler.LoginHandler)
 	r.GET("/get_user", handler.Getuser)
-	r.GET("/role", handler.ListUserFromRole)
-	r.DELETE("/deleteuser", handler.DeleteUser)
-	r.POST("/createcourse", course.CreateCourse)
-	r.DELETE("/deletecourse", course.DeleteCourse)
-	r.GET("/getcourse", course.GetCourse)
-	r.GET("/listcourses", course.ListCourses)
-	r.PUT("/updatecourse", course.UpdateCourse)
-	r.POST("/enroll", handler.EnrollUserHandler)
-	r.GET("/getenrolled", handler.GetEnrolled)
+	r.DELETE("/user", handler.DeleteUser)
+
+	r.GET("/course", course.GetCourse)
+	r.POST("/course", course.CreateCourse)
+	r.PUT("/course", course.UpdateCourse)
+	r.DELETE("/course", course.DeleteCourse)
+
+	r.GET("/allcourse", course.ListCourses)
+
+	r.GET("/enroll", enrollment.GetEnrolled)
+	r.POST("/enroll", enrollment.EnrollUserHandler)
+
+	r.GET("/quiz", quiz.CreateQuizHandler)
+	r.POST("/quiz", quiz.CreateQuizHandler)
 	r.Run(":8080")
 }

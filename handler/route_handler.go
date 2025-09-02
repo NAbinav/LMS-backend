@@ -91,12 +91,12 @@ func Getuser(c *gin.Context) {
 }
 
 func ListUserFromRole(c *gin.Context) {
-	ctx := c.Request.Context()
 	role := c.Query("role")
 	if role == "" {
 		c.JSON(400, gin.H{"error": "Role is required"})
 		return
 	}
+	ctx := c.Request.Context()
 
 	query := "SELECT * FROM users WHERE role = $1"
 	rows, err := db.DB.Query(ctx, query, role)

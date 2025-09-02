@@ -62,7 +62,6 @@ func DeleteCourse(c *gin.Context) {
 		fmt.Println("Error deleting course:", err)
 		c.JSON(500, gin.H{"error": "Failed to delete course"})
 	}
-
 	rowsAffected := result.RowsAffected()
 	if rowsAffected == 0 {
 		c.JSON(404, gin.H{"error": "Course not found"})

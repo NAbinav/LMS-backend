@@ -1,7 +1,6 @@
-package handler
+package enrollment
 
 import (
-	"dbms/enrollment"
 	"dbms/helper"
 	"fmt"
 	"strconv"
@@ -28,7 +27,7 @@ func EnrollUserHandler(c *gin.Context) {
 		c.JSON(400, err)
 		return
 	}
-	err = enrollment.EnrollUser(ctx, user.Id, course_id)
+	err = EnrollUser(ctx, user.Id, course_id)
 	if err != nil {
 		c.JSON(400, err)
 		return
@@ -43,7 +42,7 @@ func GetEnrolled(c *gin.Context) {
 	if err != nil {
 		c.JSON(401, "Token Unauthorised")
 	}
-	all_courses, err := enrollment.GetAllEnrolledCourse(ctx, user.Id)
+	all_courses, err := GetAllEnrolledCourse(ctx, user.Id)
 	if err != nil {
 		c.JSON(400, err)
 		return

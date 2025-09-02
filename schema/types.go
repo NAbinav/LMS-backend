@@ -25,3 +25,11 @@ type Enrollment struct {
 	EnrollDate time.Time `json:"enrollment_date"`
 	Status     string    `json:"status"`
 }
+
+type QuizQuestion struct {
+	Id       int    `json:"id"`
+	CourseID int    `json:"course_id"`
+	Title    string `json:"title"`
+	OrderNum int    `json:"order_num"`
+	Content  string `json:"content"`
+}
