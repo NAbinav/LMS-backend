@@ -32,5 +32,13 @@ func GetAssignment(ctx context.Context, user_id int) ([]CustomAssignment, error)
 		return []CustomAssignment{}, err
 	}
 	defer rows.Close()
-	return []CustomAssignment{}, err
+	var all_assignments []CustomAssignment
+	for rows.Next() {
+		var SingleAssigment CustomAssignment
+		if err := rows.Scan(&SingleAssigment.course_name, &SingleAssigment.assgn_title, SingleAssigment.due_date, SingleAssigment.max_points); err != nil {
+			return []CustomAssignment{}, err
+		}
+		all_assignments = append(all_assignments, SingleAssigment)
+	}
+	return all_assignments, nil
 }

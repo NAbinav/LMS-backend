@@ -50,6 +50,6 @@ func main() {
 	// TODO: Assignment and submisssion
 	// Modules
 	r.GET("/Assignment", assignments.CreateAssignmentHandler)
-	r.POST("/Assignment", assignments.CreateAssignmentHandler)
+	r.POST("/Assignment", assignments.GetAssignmentHandler)
 	r.Run(":8080")
 }

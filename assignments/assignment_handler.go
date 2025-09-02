@@ -1,6 +1,9 @@
 package assignments
 
 import (
+	"dbms/helper"
+	// "fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,6 +29,16 @@ func CreateAssignmentHandler(c *gin.Context) {
 	c.JSON(201, "Inserted Successfully")
 }
 
-// func GetAssignmentHandler(c *gin.Context) {
-// 	ctx := c.Request.Context()
-// }
+func GetAssignmentHandler(c *gin.Context) {
+	ctx := c.Request.Context()
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		c.JSON(400, err)
+	}
+	assignment, err := GetAssignment(ctx, user.Id)
+	if err != nil {
+		c.JSON(400, err)
+		return
+	}
+	c.JSON(200, assignment)
+}
