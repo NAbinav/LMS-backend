@@ -14,9 +14,10 @@ package quiz
 import (
 	"context"
 	"dbms/db"
-	"dbms/helper"
-
-	"github.com/gin-gonic/gin"
+	// "dbms/helper"
+	// "dbms/schema"
+	//
+	// "github.com/gin-gonic/gin"
 )
 
 func CreateQuiz(ctx context.Context, course_id int, title string, max_attempts int, time_limit int) error {
@@ -28,12 +29,26 @@ func CreateQuiz(ctx context.Context, course_id int, title string, max_attempts i
 	return nil
 }
 
-func CheckQuizEnrolled(c *gin.Context, quiz_id int) bool {
-	user, err := helper.WhoamI(c)
-	if err != nil {
-		return false
-	}
-	query := "SELECT * FROM QUIZZES JOIN COURSES c ON c.id=q.course"
+type CustomQuizEnrolled struct {
+	Course_name string `json:"course_name"`
+	Quiz_title  string `json:"quiz_title"`
+	Time_limit  int    `json:"time_limit"`
+}
 
-	return true
+func AllQuizEnrolled(ctx context.Context, user_id int) []CustomQuizEnrolled {
+	query := "select c.title as course_name, q.title as quiz_title, q.time_limit as time_limit from quizzes q join enrollments e on e.course_id=q.course_id join users u on u.id=e.user_id join courses c on c.id=e.course_id where u.id=$1;"
+	rows, err := db.DB.Query(ctx, query, user_id)
+	if err != nil {
+		return []CustomQuizEnrolled{}
+	}
+	defer rows.Close()
+	var AllQuiz []CustomQuizEnrolled
+	for rows.Next() {
+		var SingleQuiz CustomQuizEnrolled
+		if err := rows.Scan(&SingleQuiz.Course_name, &SingleQuiz.Quiz_title, &SingleQuiz.Time_limit); err != nil {
+			return []CustomQuizEnrolled{}
+		}
+		AllQuiz = append(AllQuiz, SingleQuiz)
+	}
+	return AllQuiz
 }

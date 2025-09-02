@@ -31,17 +31,15 @@ func CreateQuizHandler(c *gin.Context) {
 	c.JSON(201, "Inserted successfully")
 }
 
-func GetQuizHandler(c *gin.Context) {
-	quiz_id := c.Query("quiz_id")
-	//ctx := c.Request.Context()
-	// var quiz_input struct {
-	// 	Course_id    int    `json:"course_id"`
-	// 	Title        string `json:"title"`
-	// 	Max_attempts int    `json:"max_attempts"`
-	// 	Time_limit   int    `json:"time_limit"`
-	// }
-	if !(helper.CheckRole(c, "instructor") || CheckQuizEnrolled(c, quiz_id)) {
-		c.JSON(401, "UnAuthorised Access")
+// NOTE: Gets all the quiz that is available to the user
+func GetAllQuizHandler(c *gin.Context) {
+	ctx := c.Request.Context()
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		c.JSON(400, "Not available")
 		return
 	}
+	quiz := AllQuizEnrolled(ctx, user.Id)
+	c.JSON(200, quiz)
+
 }

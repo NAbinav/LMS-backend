@@ -87,7 +87,6 @@ func Getuser(c *gin.Context) {
 		return
 	}
 	c.JSON(200, user)
-	return
 }
 
 func ListUserFromRole(c *gin.Context) {

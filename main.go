@@ -43,7 +43,7 @@ func main() {
 	r.GET("/enroll", enrollment.GetEnrolled)
 	r.POST("/enroll", enrollment.EnrollUserHandler)
 
-	r.GET("/quiz", quiz.CreateQuizHandler)
+	r.GET("/quiz", quiz.GetAllQuizHandler)
 	r.POST("/quiz", quiz.CreateQuizHandler)
 	r.Run(":8080")
 }

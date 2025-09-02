@@ -33,3 +33,12 @@ type QuizQuestion struct {
 	OrderNum int    `json:"order_num"`
 	Content  string `json:"content"`
 }
+
+type Quiz struct {
+	Id           int    `json:"id"`
+	Course_id    int    `json:"course_id"`
+	Title        string `json:"title"`
+	Max_attempts int    `json:"max_attempts"`
+	Time_limit   int    `json:"time_limit"`
+	Created_at   int    `json:"created_at"`
+}
