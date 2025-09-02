@@ -32,6 +32,7 @@ func CreateQuizHandler(c *gin.Context) {
 }
 
 // NOTE: Gets all the quiz that is available to the user
+
 func GetAllQuizHandler(c *gin.Context) {
 	ctx := c.Request.Context()
 	user, err := helper.WhoamI(c)

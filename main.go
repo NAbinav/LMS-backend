@@ -1,14 +1,16 @@
 package main
 
 import (
+	"dbms/assignments"
 	"dbms/course"
 	"dbms/db"
 	"dbms/enrollment"
 	"dbms/handler"
 	"dbms/quiz"
+	"time"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func main() {
@@ -37,7 +39,6 @@ func main() {
 	r.POST("/course", course.CreateCourse)
 	r.PUT("/course", course.UpdateCourse)
 	r.DELETE("/course", course.DeleteCourse)
-
 	r.GET("/allcourse", course.ListCourses)
 
 	r.GET("/enroll", enrollment.GetEnrolled)
@@ -45,5 +46,10 @@ func main() {
 
 	r.GET("/quiz", quiz.GetAllQuizHandler)
 	r.POST("/quiz", quiz.CreateQuizHandler)
+
+	// TODO: Assignment and submisssion
+	// Modules
+	r.GET("/Assignment", assignments.CreateAssignmentHandler)
+	r.POST("/Assignment", assignments.CreateAssignmentHandler)
 	r.Run(":8080")
 }

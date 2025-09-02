@@ -3,9 +3,8 @@ package enrollment
 import (
 	"dbms/helper"
 	"fmt"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 func EnrollUserHandler(c *gin.Context) {

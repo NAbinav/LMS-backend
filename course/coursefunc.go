@@ -103,7 +103,7 @@ func GetCourse(c *gin.Context) {
 func ListCourses(c *gin.Context) {
 	ctx := c.Request.Context()
 	id := c.Query("inst_id")
-	query := "SELECT * FROM courses where instructor_id = $1"
+	query := "SELECT * FROM courses"
 	rows, err := db.DB.Query(ctx, query, id)
 	if err != nil {
 		fmt.Println("Error fetching courses:", err)
