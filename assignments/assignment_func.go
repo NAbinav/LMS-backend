@@ -4,6 +4,7 @@ import (
 	"context"
 	"dbms/db"
 	"fmt"
+	"time"
 	// "github.com/go-playground/locales/qu"
 	// "time"
 )
@@ -19,10 +20,11 @@ func CreateAssignment(ctx context.Context, course_id int, title string, descript
 }
 
 type CustomAssignment struct {
-	course_name string
-	assgn_title string
-	due_date    string
-	max_points  int
+	Course_name string
+	Assgn_title string
+	Due_date    time.Time
+	Max_points  int
+	User_name   string
 }
 
 func GetAssignment(ctx context.Context, user_id int) ([]CustomAssignment, error) {
@@ -35,10 +37,12 @@ func GetAssignment(ctx context.Context, user_id int) ([]CustomAssignment, error)
 	var all_assignments []CustomAssignment
 	for rows.Next() {
 		var SingleAssigment CustomAssignment
-		if err := rows.Scan(&SingleAssigment.course_name, &SingleAssigment.assgn_title, SingleAssigment.due_date, SingleAssigment.max_points); err != nil {
+		if err := rows.Scan(&SingleAssigment.Course_name, &SingleAssigment.Assgn_title, &SingleAssigment.Due_date, &SingleAssigment.Max_points, &SingleAssigment.User_name); err != nil {
+			fmt.Println(err)
 			return []CustomAssignment{}, err
 		}
 		all_assignments = append(all_assignments, SingleAssigment)
+		// fmt.Println(all_assignments)
 	}
 	return all_assignments, nil
 }
