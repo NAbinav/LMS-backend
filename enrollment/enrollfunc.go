@@ -5,6 +5,8 @@ import (
 	"dbms/db"
 	"dbms/schema"
 	"fmt"
+	// "github.com/gin-gonic/gin"
+	// "github.com/go-playground/locales/qu"
 )
 
 // CREATE TABLE Enrollments (
@@ -45,4 +47,10 @@ func GetAllEnrolledCourse(ctx context.Context, userID int) ([]schema.Courses, er
 		courses = append(courses, course_row)
 	}
 	return courses, nil
+}
+
+func DeleteEnrollment(ctx context.Context, courseid int, userid int) error {
+	query := "DELETE FROM enrollments where user_id=$1 and course_id=$2"
+	_, err := db.DB.Exec(ctx, query, userid, courseid)
+	return err
 }

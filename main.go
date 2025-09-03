@@ -7,6 +7,7 @@ import (
 	"dbms/enrollment"
 	"dbms/handler"
 	"dbms/quiz"
+	"dbms/submission"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -43,13 +44,17 @@ func main() {
 
 	r.GET("/enroll", enrollment.GetEnrolled)
 	r.POST("/enroll", enrollment.EnrollUserHandler)
+	r.DELETE("/enroll", enrollment.DeleteEnrollementHandler)
 
 	r.GET("/quiz", quiz.GetAllQuizHandler)
 	r.POST("/quiz", quiz.CreateQuizHandler)
 
 	// TODO: Assignment and submisssion
 	// Modules
-	r.GET("/Assignment", assignments.CreateAssignmentHandler)
-	r.POST("/Assignment", assignments.GetAssignmentHandler)
+	r.POST("/assignment", assignments.CreateAssignmentHandler)
+	r.GET("/assignment", assignments.GetAssignmentHandler)
+
+	r.GET("/submissions", submission.NewSubmissionHandler)
+
 	r.Run(":8080")
 }
