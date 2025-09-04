@@ -3,6 +3,7 @@ package course
 import (
 	"context"
 	"dbms/db"
+	"dbms/helper"
 	"fmt"
 	"time"
 
@@ -10,11 +11,11 @@ import (
 )
 
 type Course_type struct {
-	Id           int    `json:"id"`
-	Title        string `json:"title"`
-	Description  string `json:"description"`
-	InstructorID int    `json:"instructor_id"`
-	Credits      int    `json:"credits"`
+	Id          int    `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	// InstructorID int    `json:"instructor_id"`
+	Credits int `json:"credits"`
 }
 type Courses struct {
 	Id           int       `json:"id"`
@@ -43,7 +44,13 @@ func CreateCourse(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, "Provide body")
 	}
-	err = CreateCourseDB(ctx, Course.Id, Course.Title, Course.Description, Course.InstructorID, Course.Credits)
+	user, err := helper.WhoamI(c)
+	if err != nil || user.Role != "instructor" {
+		c.JSON(401, "Unauthorised Access")
+		return
+	}
+
+	err = CreateCourseDB(ctx, Course.Id, Course.Title, Course.Description, user.Id, Course.Credits)
 	if err != nil {
 		fmt.Println("Error creating course:", err)
 		c.JSON(500, gin.H{"error": "Failed to create course"})
@@ -136,9 +143,15 @@ func UpdateCourse(c *gin.Context) {
 	}
 
 	ctx := c.Request.Context()
+	user, err := helper.WhoamI(c)
+	if err != nil || user.Role != "instructor" {
+		c.JSON(401, "Unauthorised Access")
+		return
+	}
+
 	query := "UPDATE courses SET title = $1, description = $2, instructor_id = $3, credits = $4 WHERE id = $5"
-	fmt.Println("Executing query:", query, course.Title, course.Description, course.InstructorID, course.Credits, course.Id)
-	result, err := db.DB.Exec(ctx, query, course.Title, course.Description, course.InstructorID, course.Credits, course.Id)
+	fmt.Println("Executing query:", query, course.Title, course.Description, user.Id, course.Credits, course.Id)
+	result, err := db.DB.Exec(ctx, query, course.Title, course.Description, user.Id, course.Credits, course.Id)
 	if err != nil {
 		fmt.Println("Error updating course:", err)
 		c.JSON(500, gin.H{"error": "Failed to update course"})

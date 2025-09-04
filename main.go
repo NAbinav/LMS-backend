@@ -6,6 +6,7 @@ import (
 	"dbms/db"
 	"dbms/enrollment"
 	"dbms/handler"
+	"dbms/modules"
 	"dbms/quiz"
 	"dbms/submission"
 	"time"
@@ -53,8 +54,8 @@ func main() {
 	// Modules
 	r.POST("/assignment", assignments.CreateAssignmentHandler)
 	r.GET("/assignment", assignments.GetAssignmentHandler)
-
 	r.GET("/submissions", submission.NewSubmissionHandler)
 
+	r.POST("/modules", modules.CreateModuleHandler)
 	r.Run(":8080")
 }

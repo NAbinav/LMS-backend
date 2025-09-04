@@ -70,7 +70,7 @@ func DeleteEnrollementHandler(c *gin.Context) {
 		c.JSON(400, err)
 		return
 	}
-	err = DeleteEnrollment(ctx, user.Id, course_id)
+	err = DeleteEnrollment(ctx, course_id, user.Id)
 	if err != nil {
 		c.JSON(400, err)
 		return

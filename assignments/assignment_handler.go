@@ -22,6 +22,11 @@ func CreateAssignmentHandler(c *gin.Context) {
 		c.JSON(400, "Cant create Assignment")
 		return
 	}
+	user, err := helper.WhoamI(c)
+	if err != nil || user.Role != "instructor" {
+		c.JSON(401, "Unauthorised Access")
+		return
+	}
 	err = CreateAssignment(ctx, Assignment.Course_id, Assignment.Title, Assignment.Description, Assignment.Due_date, Assignment.Max_points)
 	if err != nil {
 		c.JSON(400, err)
