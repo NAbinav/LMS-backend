@@ -19,7 +19,7 @@ func CreateModuleHandler(c *gin.Context) {
 	ctx := c.Request.Context()
 	c.ShouldBindJSON(&module_input)
 	user, err := helper.WhoamI(c)
-	if err != nil || user.Role != "instructor" {
+	if err != nil || user.Role != "instructor" || !helper.CheckValidFaculty(ctx, user.Id, module_input.Course_id) {
 		c.JSON(401, "Unauthorised Access")
 		return
 	}

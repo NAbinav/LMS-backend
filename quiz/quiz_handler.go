@@ -14,11 +14,15 @@ func CreateQuizHandler(c *gin.Context) {
 		Max_attempts int    `json:"max_attempts"`
 		Time_limit   int    `json:"time_limit"`
 	}
-	if !helper.CheckRole(c, "instructor") {
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		c.JSON(401, "Not Authenticated to create quiz")
+	}
+	if !helper.CheckRole(c, "instructor") || !helper.CheckValidFaculty(ctx, user.Id, quiz_input.Course_id) {
 		c.JSON(401, "Not Authenticated to create quiz")
 		return
 	}
-	err := c.ShouldBindJSON(&quiz_input)
+	err = c.ShouldBindJSON(&quiz_input)
 	if err != nil {
 		c.JSON(400, err)
 		return
