@@ -26,7 +26,7 @@ type Courses struct {
 	CreatedAt    time.Time `json:"created_at"`
 }
 
-func CreateCourseDB(ctx context.Context, id int, title string, description string, instructorID int, credits int) error {
+func CreateCourseDB(ctx context.Context, title string, description string, instructorID int, credits int) error {
 	query := "INSERT INTO courses (title, description, instructor_id, credits) VALUES ($1, $2, $3, $4)"
 	_, err := db.DB.Exec(ctx, query, title, description, instructorID, credits)
 	if err != nil {
@@ -50,7 +50,7 @@ func CreateCourse(c *gin.Context) {
 		return
 	}
 
-	err = CreateCourseDB(ctx, Course.Id, Course.Title, Course.Description, user.Id, Course.Credits)
+	err = CreateCourseDB(ctx, Course.Title, Course.Description, user.Id, Course.Credits)
 	if err != nil {
 		fmt.Println("Error creating course:", err)
 		c.JSON(500, gin.H{"error": "Failed to create course"})

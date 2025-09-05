@@ -2,9 +2,11 @@ package enrollment
 
 import (
 	"dbms/helper"
+	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func EnrollUserHandler(c *gin.Context) {
@@ -41,6 +43,10 @@ func GetEnrolled(c *gin.Context) {
 	user, err := helper.WhoamI(c)
 	if err != nil {
 		c.JSON(401, "Token Unauthorised")
+	}
+	if user.Role != "student" {
+		c.JSON(200, errors.New("No enrolling for faculties"))
+		return
 	}
 	all_courses, err := GetAllEnrolledCourse(ctx, user.Id)
 	if err != nil {
