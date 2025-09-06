@@ -43,6 +43,8 @@ func main() {
 	r.DELETE("/course", course.DeleteCourse)
 	r.GET("/allcourse", course.ListCourses)
 
+	r.GET("/coursefac", course.GetFacultyCourses)
+
 	r.GET("/enroll", enrollment.GetEnrolled)
 	r.POST("/enroll", enrollment.EnrollUserHandler)
 	r.DELETE("/enroll", enrollment.DeleteEnrollementHandler)

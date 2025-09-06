@@ -6,15 +6,14 @@ import (
 	"fmt"
 )
 
-func CheckIfAssigned(ctx context.Context, user_id int, assignment_id int) {
-	query := "select * from assignment a join enrollment on a.course_id=e.course_id where e.user_id=$1"
+func CheckIfAssigned(ctx context.Context, user_id int, assignment_id int) bool {
+	query := "select e.user_id from assignments a join enrollments e on a.course_id=e.course_id where a.id=$1 and user_id=$2"
 	fmt.Println(query)
-	rows, err := db.DB.Query(ctx, query, user_id)
+	var query_user int
+	err := db.DB.QueryRow(ctx, query, assignment_id, user_id).Scan(&query_user)
+	fmt.Println(query_user)
 	if err != nil {
-		return
+		return false
 	}
-	defer rows.Close()
-	for rows.Next() {
-
-	}
+	return user_id == query_user
 }

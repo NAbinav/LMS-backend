@@ -17,16 +17,21 @@ type NewSubmission struct {
 
 func NewSubmissionHandler(c *gin.Context) {
 	ctx := c.Request.Context()
-	var Submission NewSubmission
-	err := c.ShouldBindJSON(Submission)
-	if err != nil {
-		c.JSON(200, err)
-	}
+	// var Submission NewSubmission
+	// err := c.ShouldBindJSON(Submission)
+	// if err != nil {
+	// 	c.JSON(200, err)
+	// }
 	user, err := helper.WhoamI(c)
 	if err != nil {
 		c.JSON(200, err)
 	}
 	ass_id := c.Query("a_id")
 	int_ass_id, err := strconv.Atoi(ass_id)
-	CheckIfAssigned(ctx, user.Id, int_ass_id)
+	isAssigned := CheckIfAssigned(ctx, user.Id, int_ass_id)
+	if !isAssigned {
+		c.JSON(401, "Not Assigned")
+		return
+	}
+
 }
