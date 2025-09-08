@@ -2,6 +2,7 @@ package course
 
 import (
 	"dbms/helper"
+	"fmt"
 	// "errors"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ func GetFacultyCourses(c *gin.Context) {
 	}
 	all_courses, err := AllCoursesHandled(ctx, user.Id)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, err)
 		return
 	}
