@@ -2,6 +2,7 @@ package submission
 
 import (
 	"dbms/helper"
+	"dbms/schema"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +27,16 @@ func NewSubmissionHandler(c *gin.Context) {
 		return
 	}
 	err = AssignmentSubmit(ctx, user.Id, Submission.AssignmentId, Submission.SubmissionText)
+	if err != nil {
+		c.JSON(400, err)
+		return
+	}
+}
+
+func GetAllSubmissions(c *gin.Context) {
+	// ctx := c.Request.Context()
+	var Submissions []schema.Submission
+	err := c.BindJSON(Submissions)
 	if err != nil {
 		c.JSON(400, err)
 		return

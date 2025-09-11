@@ -57,7 +57,8 @@ func main() {
 	// Modules
 	r.POST("/assignment", assignments.CreateAssignmentHandler)
 	r.GET("/assignment", assignments.GetAssignmentHandler)
-	r.GET("/submissions", submission.NewSubmissionHandler)
+	r.POST("/submissions", submission.NewSubmissionHandler)
+	r.GET("/submissions", submission.GetAllSubmissions)
 
 	r.POST("/module", modules.CreateModuleHandler)
 	r.GET("/module", modules.GetModulesHandler)

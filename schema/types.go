@@ -42,3 +42,15 @@ type Quiz struct {
 	Time_limit   int    `json:"time_limit"`
 	Created_at   int    `json:"created_at"`
 }
+
+type Submission struct {
+	Id             int     `json:"id"`
+	AssignmentId   int     `json:"assignment_id"`
+	UserId         int     `json:"user_id"`
+	SubmissionText string  `json:"submission_text"`
+	SubmissionAt   string  `json:"submitted_at"`
+	Grade          float64 `json:"grade"`
+	GradedAt       string  `json:"graded_at"`
+	GradedBy       int     `json:"graded_by"`
+	Status         string  `json:"status"`
+}
