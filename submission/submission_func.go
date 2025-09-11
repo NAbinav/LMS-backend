@@ -4,6 +4,7 @@ import (
 	"context"
 	"dbms/db"
 	"fmt"
+	"time"
 )
 
 func CheckIfAssigned(ctx context.Context, user_id int, assignment_id int) bool {
@@ -16,4 +17,10 @@ func CheckIfAssigned(ctx context.Context, user_id int, assignment_id int) bool {
 		return false
 	}
 	return user_id == query_user
+}
+
+func AssignmentSubmit(ctx context.Context, user_id int, a_id int, submission_text string) error {
+	query := "insert into submissions (user_id,assignment_id,submission_text,submitted_at) values ($1,$2,$3,$4)"
+	_, err := db.DB.Exec(ctx, query, user_id, a_id, submission_text, time.Now())
+	return err
 }

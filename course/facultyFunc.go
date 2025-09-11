@@ -3,6 +3,7 @@ package course
 import (
 	"context"
 	"dbms/db"
+	"fmt"
 )
 
 func AllCoursesHandled(ctx context.Context, instructor_id int) ([]Courses, error) {
@@ -21,4 +22,23 @@ func AllCoursesHandled(ctx context.Context, instructor_id int) ([]Courses, error
 		AllCourse = append(AllCourse, SingleCourse)
 	}
 	return AllCourse, nil
+}
+
+func AllStudentsEnrolled(ctx context.Context, course_id string) ([]string, error) {
+	query := "SELECT u.name FROM ENROLLMENTS e join users u on u.id=e.user_id where course_id=$1"
+	rows, err := db.DB.Query(ctx, query, course_id)
+	if err != nil {
+		fmt.Println(err)
+		return []string{}, err
+	}
+	defer rows.Close()
+	var AllNames []string
+	for rows.Next() {
+		var SingleName string
+		if err := rows.Scan(&SingleName); err != nil {
+			return []string{}, err
+		}
+		AllNames = append(AllNames, SingleName)
+	}
+	return AllNames, nil
 }

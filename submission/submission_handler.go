@@ -2,36 +2,32 @@ package submission
 
 import (
 	"dbms/helper"
-	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 type NewSubmission struct {
-	Id             int       `json:"id"`
-	AssignmentId   int       `json:"assignment_id"`
-	SubmissionText string    `json:"submission_text"`
-	SubmittedAt    time.Time `json:"submitted_at"`
+	AssignmentId   int    `json:"assignment_id"`
+	SubmissionText string `json:"submission_text"`
 }
 
 func NewSubmissionHandler(c *gin.Context) {
 	ctx := c.Request.Context()
-	// var Submission NewSubmission
-	// err := c.ShouldBindJSON(Submission)
-	// if err != nil {
-	// 	c.JSON(200, err)
-	// }
+	var Submission NewSubmission
+	err := c.ShouldBindJSON(Submission)
 	user, err := helper.WhoamI(c)
 	if err != nil {
 		c.JSON(200, err)
+		return
 	}
-	ass_id := c.Query("a_id")
-	int_ass_id, err := strconv.Atoi(ass_id)
-	isAssigned := CheckIfAssigned(ctx, user.Id, int_ass_id)
+	isAssigned := CheckIfAssigned(ctx, user.Id, Submission.AssignmentId)
 	if !isAssigned {
 		c.JSON(401, "Not Assigned")
 		return
 	}
-
+	err = AssignmentSubmit(ctx, user.Id, Submission.AssignmentId, Submission.SubmissionText)
+	if err != nil {
+		c.JSON(400, err)
+		return
+	}
 }

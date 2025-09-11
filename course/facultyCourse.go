@@ -3,6 +3,8 @@ package course
 import (
 	"dbms/helper"
 	"fmt"
+	// "strconv"
+
 	// "errors"
 
 	"github.com/gin-gonic/gin"
@@ -21,4 +23,17 @@ func GetFacultyCourses(c *gin.Context) {
 		return
 	}
 	c.JSON(200, all_courses)
+}
+
+func StdInCourse(c *gin.Context) {
+	ctx := c.Request.Context()
+	course_id := c.Query("course_id")
+	// course_id_int,  := strconv.Atoi(course_id)
+	allnames, err := AllStudentsEnrolled(ctx, course_id)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(400, err)
+		return
+	}
+	c.JSON(200, allnames)
 }

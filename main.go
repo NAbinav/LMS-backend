@@ -44,6 +44,7 @@ func main() {
 	r.GET("/allcourse", course.ListCourses)
 
 	r.GET("/coursefac", course.GetFacultyCourses)
+	r.GET("/allstd", course.StdInCourse)
 
 	r.GET("/enroll", enrollment.GetEnrolled)
 	r.POST("/enroll", enrollment.EnrollUserHandler)
@@ -58,6 +59,7 @@ func main() {
 	r.GET("/assignment", assignments.GetAssignmentHandler)
 	r.GET("/submissions", submission.NewSubmissionHandler)
 
-	r.POST("/modules", modules.CreateModuleHandler)
+	r.POST("/module", modules.CreateModuleHandler)
+	r.GET("/module", modules.GetModulesHandler)
 	r.Run(":8080")
 }
