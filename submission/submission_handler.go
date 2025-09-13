@@ -1,8 +1,10 @@
 package submission
 
 import (
+	// "context"
 	"dbms/helper"
-	"dbms/schema"
+	"errors"
+	// "dbms/schema"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,12 +36,20 @@ func NewSubmissionHandler(c *gin.Context) {
 }
 
 func GetAllSubmissions(c *gin.Context) {
-	// ctx := c.Request.Context()
-	// var Submissions []schema.Submission
-	// err := c.BindJSON(Submissions)
-	// if err != nil {
-	// 	c.JSON(400, err)
-	// 	return
-	// }
-
+	ctx := c.Request.Context()
+	a_id := c.Query("a_id")
+	c_id, err := CourseidOfAssignment(ctx, a_id)
+	if err != nil {
+		c.AbortWithError(400, err)
+	}
+	c.JSON(200, c_id)
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+	if user.Role != "instructor" || !helper.CheckValidFaculty(ctx, user.Id, c_id) {
+		c.AbortWithError(400, errors.New("Not authorised"))
+		return
+	}
 }

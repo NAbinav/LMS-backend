@@ -24,3 +24,19 @@ func AssignmentSubmit(ctx context.Context, user_id int, a_id int, submission_tex
 	_, err := db.DB.Exec(ctx, query, user_id, a_id, submission_text, time.Now())
 	return err
 }
+
+func CourseidOfAssignment(ctx context.Context, a_id string) (int, error) {
+	query := "select course_id from assignments where id=$1"
+	var c_id int
+	err := db.DB.QueryRow(ctx, query, a_id).Scan(&c_id)
+	if err != nil {
+		return 0, err
+	}
+	return c_id, nil
+}
+
+func AllSubmissions(ctx context.Context, a_id int) {
+	query := "select * from submissions where assignment_id=$1"
+	rows, err := db.DB.Query(ctx, query, a_id)
+	defer rows.Close()
+}
