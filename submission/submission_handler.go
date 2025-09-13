@@ -35,10 +35,11 @@ func NewSubmissionHandler(c *gin.Context) {
 
 func GetAllSubmissions(c *gin.Context) {
 	// ctx := c.Request.Context()
-	var Submissions []schema.Submission
-	err := c.BindJSON(Submissions)
-	if err != nil {
-		c.JSON(400, err)
-		return
-	}
+	// var Submissions []schema.Submission
+	// err := c.BindJSON(Submissions)
+	// if err != nil {
+	// 	c.JSON(400, err)
+	// 	return
+	// }
+
 }

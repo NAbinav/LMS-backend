@@ -46,5 +46,4 @@ func GetAllQuizHandler(c *gin.Context) {
 	}
 	quiz := AllQuizEnrolled(ctx, user.Id)
 	c.JSON(200, quiz)
-
 }
