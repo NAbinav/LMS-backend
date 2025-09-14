@@ -6,9 +6,11 @@ import (
 	"dbms/db"
 	"dbms/enrollment"
 	"dbms/handler"
+	"dbms/helper"
 	"dbms/modules"
 	"dbms/quiz"
 	"dbms/submission"
+	"fmt"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -29,6 +31,12 @@ func main() {
 		panic("Failed to connect to the database: " + err.Error())
 	}
 	r.GET("/", func(c *gin.Context) {
+		user, err := helper.WhoamI(c)
+		if err != nil {
+			return
+		}
+		fmt.Println(user.Email)
+
 		c.String(200, "Hello, World!")
 	})
 	r.GET("/role", handler.ListUserFromRole)
@@ -36,6 +44,7 @@ func main() {
 	r.POST("/login", handler.LoginHandler)
 	r.GET("/get_user", handler.Getuser)
 	r.DELETE("/user", handler.DeleteUser)
+	r.GET("/logout", handler.LogOut)
 
 	r.GET("/course", course.GetCourse)
 	r.POST("/course", course.CreateCourse)
@@ -57,7 +66,6 @@ func main() {
 	// Modules
 	r.POST("/assignment", assignments.CreateAssignmentHandler)
 	r.GET("/assignment", assignments.GetAssignmentHandler)
-
 	r.POST("/submissions", submission.NewSubmissionHandler)
 	r.GET("/submissions", submission.GetAllSubmissions)
 

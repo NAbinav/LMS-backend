@@ -35,8 +35,28 @@ func CourseidOfAssignment(ctx context.Context, a_id string) (int, error) {
 	return c_id, nil
 }
 
-func AllSubmissions(ctx context.Context, a_id int) {
-	query := "select * from submissions where assignment_id=$1"
+type CustomSubmission struct {
+	UserID      int       `json:"user_id"`
+	URL         string    `json:"url"`
+	SubmittedAt time.Time `json:"submitted_at"`
+}
+
+func AllSubmissions(ctx context.Context, a_id string) ([]CustomSubmission, error) {
+	query := "select user_id,submission_text,submitted_at  from submissions where assignment_id=$1"
 	rows, err := db.DB.Query(ctx, query, a_id)
+
+	if err != nil {
+		return []CustomSubmission{}, err
+	}
+	var Submissions []CustomSubmission
 	defer rows.Close()
+	for rows.Next() {
+		var SingleSubmission CustomSubmission
+
+		if err := rows.Scan(&SingleSubmission.UserID, &SingleSubmission.URL, &SingleSubmission.SubmittedAt); err != nil {
+			return []CustomSubmission{}, err
+		}
+		Submissions = append(Submissions, SingleSubmission)
+	}
+	return Submissions, err
 }

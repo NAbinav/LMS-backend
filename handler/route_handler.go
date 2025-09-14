@@ -159,3 +159,7 @@ func DeleteUser(c *gin.Context) {
 
 	c.JSON(200, gin.H{"message": "User deleted successfully"})
 }
+
+func LogOut(c *gin.Context) {
+	c.SetCookie("token", "", 1, "/", "localhost", false, true)
+}

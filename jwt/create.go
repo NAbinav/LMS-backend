@@ -34,4 +34,3 @@ func Verify_JWT(token_string string) (string, error) {
 	}
 	return (token.Claims.(jwt.MapClaims))["email_id"].(string), nil
 }
-

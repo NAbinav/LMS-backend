@@ -52,4 +52,9 @@ func GetAllSubmissions(c *gin.Context) {
 		c.AbortWithError(400, errors.New("Not authorised"))
 		return
 	}
+	val, err := AllSubmissions(ctx, a_id)
+	if err != nil {
+		c.AbortWithError(400, err)
+	}
+	c.JSON(200, val)
 }
