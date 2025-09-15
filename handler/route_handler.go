@@ -137,14 +137,12 @@ func ListUserFromRole(c *gin.Context) {
 
 func DeleteUser(c *gin.Context) {
 	ctx := c.Request.Context()
-	id := c.Query("id")
-	if id == "" {
-		c.JSON(400, gin.H{"error": "ID is required"})
-		return
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		c.JSON(400, err)
 	}
-
 	query := "DELETE FROM users WHERE id = $1"
-	result, err := db.DB.Exec(ctx, query, id)
+	result, err := db.DB.Exec(ctx, query, user.Id)
 	if err != nil {
 		fmt.Println("Error deleting user:", err)
 		c.JSON(500, gin.H{"error": "Failed to delete user"})

@@ -64,6 +64,12 @@ func DeleteCourse(c *gin.Context) {
 	id := c.Query("id")
 	ctx := c.Request.Context()
 	query := "DELETE FROM courses WHERE id = $1"
+	user, err := helper.WhoamI(c)
+	if err != nil || user.Role != "instructor" {
+		c.JSON(401, "Unauthorised Access")
+		return
+	}
+
 	result, err := db.DB.Exec(ctx, query, id)
 	if err != nil {
 		fmt.Println("Error deleting course:", err)
@@ -165,4 +171,16 @@ func UpdateCourse(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "Course updated successfully"})
+}
+
+func HandlingCourse(c *gin.Context) {
+	ctx := c.Request.Context()
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		c.AbortWithError(400, err)
+		return
+	}
+	query := "SELECT c.title from courses c join enrollments e on c.id=e.course_id where c.instructor_id=$1 group by id;"
+	db.DB.Query(ctx, query, user.Id)
+
 }

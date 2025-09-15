@@ -1,6 +1,7 @@
 package quiz
 
 import (
+	// "context"
 	"dbms/helper"
 	// "dbms/schema"
 	"github.com/gin-gonic/gin"
@@ -47,3 +48,12 @@ func GetAllQuizHandler(c *gin.Context) {
 	quiz := AllQuizEnrolled(ctx, user.Id)
 	c.JSON(200, quiz)
 }
+
+// func GetQuizHandler(c *gin.Context) {
+// 	ctx := c.Request.Context()
+// 	q_id := c.Query("id")
+// 	user, err := helper.WhoamI(c)
+// 	if err != nil {
+// 		c.AbortWithError(200, err)
+// 	}
+// }

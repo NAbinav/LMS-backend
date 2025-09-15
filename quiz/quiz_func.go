@@ -52,3 +52,8 @@ func AllQuizEnrolled(ctx context.Context, user_id int) []CustomQuizEnrolled {
 	}
 	return AllQuiz
 }
+
+func GetQuizId(q_id int, user_id int) (CustomQuizEnrolled, error) {
+
+	return CustomQuizEnrolled{}, nil
+}

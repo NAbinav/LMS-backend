@@ -52,6 +52,7 @@ func main() {
 	r.DELETE("/course", course.DeleteCourse)
 	r.GET("/allcourse", course.ListCourses)
 
+	r.GET("handling", course.GetCourse)
 	r.GET("/coursefac", course.GetFacultyCourses)
 	r.GET("/allstd", course.StdInCourse)
 
@@ -61,6 +62,7 @@ func main() {
 
 	r.GET("/quiz", quiz.GetAllQuizHandler)
 	r.POST("/quiz", quiz.CreateQuizHandler)
+	r.GET("/quizid", quiz.GetAllQuizHandler)
 
 	// TODO: Assignment and submisssion
 	// Modules

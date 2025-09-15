@@ -4,6 +4,8 @@ import (
 	// "context"
 	"dbms/helper"
 	"errors"
+	"fmt"
+
 	// "dbms/schema"
 
 	"github.com/gin-gonic/gin"
@@ -17,12 +19,13 @@ type NewSubmission struct {
 func NewSubmissionHandler(c *gin.Context) {
 	ctx := c.Request.Context()
 	var Submission NewSubmission
-	err := c.ShouldBindJSON(Submission)
+	err := c.ShouldBindJSON(&Submission)
 	user, err := helper.WhoamI(c)
 	if err != nil {
 		c.JSON(200, err)
 		return
 	}
+	fmt.Println(user, Submission.AssignmentId)
 	isAssigned := CheckIfAssigned(ctx, user.Id, Submission.AssignmentId)
 	if !isAssigned {
 		c.JSON(401, "Not Assigned")
