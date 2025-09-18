@@ -9,6 +9,7 @@ import (
 	"dbms/helper"
 	"dbms/modules"
 	"dbms/quiz"
+	"dbms/quizqn"
 	"dbms/submission"
 	"fmt"
 	"time"
@@ -64,8 +65,6 @@ func main() {
 	r.POST("/quiz", quiz.CreateQuizHandler)
 	r.GET("/quizid", quiz.GetAllQuizHandler)
 
-	// TODO: Assignment and submisssion
-	// Modules
 	r.POST("/assignment", assignments.CreateAssignmentHandler)
 	r.GET("/assignment", assignments.GetAssignmentHandler)
 	r.POST("/submissions", submission.NewSubmissionHandler)
@@ -73,5 +72,6 @@ func main() {
 
 	r.POST("/module", modules.CreateModuleHandler)
 	r.GET("/module", modules.GetModulesHandler)
+	r.GET("/quizqn", quizqn.AddQns)
 	r.Run(":8080")
 }

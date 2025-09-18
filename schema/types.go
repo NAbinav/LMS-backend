@@ -3,9 +3,10 @@ package schema
 import "time"
 
 type User struct {
-	Id        int       `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
+	Id    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+
 	Password  string    `json:"password"`
 	Role      string    `json:"role"`
 	CreatedAt time.Time `json:"created_at"`
@@ -27,11 +28,13 @@ type Enrollment struct {
 }
 
 type QuizQuestion struct {
-	Id       int    `json:"id"`
-	CourseID int    `json:"course_id"`
-	Title    string `json:"title"`
-	OrderNum int    `json:"order_num"`
-	Content  string `json:"content"`
+	Id             int    `json:"id"`
+	Quiz_id        int    `json:"quiz_id"`
+	Question_text  string `json:"question_text"`
+	Points         int    `json:"points"`
+	Correct_answer string `json:"correct_answer"`
+	Order_num      int    `json:"order_num"`
+	// Question_type string `json:""`
 }
 
 type Quiz struct {
