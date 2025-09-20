@@ -19,7 +19,7 @@ type OutModule struct {
 	Link      string `json:"link"`
 }
 
-func GetModules(ctx context.Context, mod string, c_id string) (OutModule, error) {
+func GetModules(ctx context.Context, c_id string, mod string ) (OutModule, error) {
 	query := "select * from modules where course_id = $1 and order_num=$2"
 	var module OutModule
 	err := db.DB.QueryRow(ctx, query, mod, c_id).Scan(&module.Id, &module.Course_id, &module.Title, &module.Order_num, &module.Content, &module.Link)
@@ -29,24 +29,26 @@ func GetModules(ctx context.Context, mod string, c_id string) (OutModule, error)
 	return module, nil
 }
 
-func GetAllModules(ctx context.Context, c_id string) ([]OutModule, error) {
-	query := "select * from modules where course_id = $1"
-	rows, err := db.DB.Query(ctx, query, c_id)
+func GetAllModules(ctx context.Context, cID string) ([]OutModule, error) {
+	query := `SELECT id, course_id, title, order_num, content, link FROM modules WHERE course_id = $1`
+	rows, err := db.DB.Query(ctx, query, cID)
 	if err != nil {
-		return []OutModule{}, err
+		return nil, err
 	}
 	defer rows.Close()
 
-	var allmodule []OutModule
+	var allModules []OutModule
 	for rows.Next() {
 		var module OutModule
-		if err := rows.Scan(&module.Id, &module.Title, &module.Order_num, &module.Content, &module.Link); err != nil {
-			return []OutModule{}, err
+		if err := rows.Scan(&module.Id,&module.Course_id,&module.Title,&module.Order_num,&module.Content,&module.Link,); err != nil {
+			return nil, err
 		}
-		allmodule = append(allmodule, module)
+		allModules = append(allModules, module)
 	}
-	return allmodule, nil
+	return allModules, nil
 }
+
+
 func CreateModule(ctx context.Context, course_id int, title, content, link string) error {
 	var maxOrder int
 	err := db.DB.QueryRow(ctx, "SELECT COALESCE(MAX(order_num),0) FROM modules WHERE course_id=$1", course_id).Scan(&maxOrder)

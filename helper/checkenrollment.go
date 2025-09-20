@@ -5,16 +5,24 @@ import (
 	"dbms/db"
 )
 
-func CheckIfEnrolled(ctx context.Context, user_id int, c_id string) bool {
-	query := "select user_id from enrollments where user_id=$1 and course_id=$2"
-	var check_user int
-	err := db.DB.QueryRow(ctx, query, user_id, c_id).Scan(&check_user)
+func CheckIfEnrolled(ctx context.Context, userID int, courseID string) bool {
+	query := `SELECT instructor_id FROM courses WHERE id=$1`
+	rows, err := db.DB.Query(ctx, query, courseID)
 	if err != nil {
 		return false
 	}
-	if check_user != user_id {
-		return false
-	}
-	return true
+	defer rows.Close()
 
+	for rows.Next() {
+		var instructorID int
+		if err := rows.Scan(&instructorID); err != nil {
+			return false
+		}
+		if instructorID == userID {
+			return true
+		}
+	}
+
+	return false
 }
+

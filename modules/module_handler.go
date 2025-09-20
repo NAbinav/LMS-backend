@@ -3,6 +3,7 @@ package modules
 import (
 	"dbms/helper"
 	"fmt"
+	
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,6 +45,7 @@ func GetModulesHandler(c *gin.Context) {
 	ctx := c.Request.Context()
 	mod := c.Query("m_id")
 	c_id := c.Query("c_id")
+
 	user, err := helper.WhoamI(c)
 	if err != nil {
 		fmt.Println(err)
@@ -62,19 +64,19 @@ func GetModulesHandler(c *gin.Context) {
 	c.JSON(200, module)
 
 }
+
 func GetAllModulesHandler(c *gin.Context) {
 
 	ctx := c.Request.Context()
 	c_id := c.Query("c_id")
-	user, err := helper.WhoamI(c)
-	if err != nil {
-		fmt.Println(err)
-		c.JSON(400, err)
-	}
-	if !helper.CheckIfEnrolled(ctx, user.Id, c_id) {
-		c.JSON(400, "Cant Access without enrolling ")
-		return
-	}
+	//c_id, _ := strconv.Atoi(cID)
+	//user, err := helper.WhoamI(c)
+	
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	c.JSON(400, err)
+	// }
+	
 	module, err := GetAllModules(ctx, c_id)
 	if err != nil {
 		fmt.Println(err)
