@@ -7,19 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// type Module struct {
+// 	Course_id int    `json:"course_id"`
+// 	Title     string `json:"title"`
+// 	Order_num int    `json:"order_num"`
+// 	Content   string `json:"content"`
+// 	Link      string `json:"link"`
+// }
+
 type Module struct {
 	Course_id int    `json:"course_id"`
 	Title     string `json:"title"`
-	Order_num int    `json:"order_num"`
 	Content   string `json:"content"`
 	Link      string `json:"link"`
-}
-
-type Module struct {
-	Course_id int    json:"course_id"
-	Title     string json:"title"
-	Content   string json:"content"
-	Link      string json:"link"
 }
 
 func CreateModuleHandler(c *gin.Context) {
