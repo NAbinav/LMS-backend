@@ -5,12 +5,11 @@ import (
 	"dbms/db"
 )
 
-func CreateModule(ctx context.Context, course_id int, order_num int, title string, content string, link string) error {
-	query := "INSERT INTO MODULES (title,content,order_num,course_id,link) values ($1,$2,$3,$4,$5)"
-	_, err := db.DB.Exec(ctx, query, title, content, order_num, course_id, link)
-	return err
-}
-
+//	func CreateModule(ctx context.Context, course_id int, order_num int, title string, content string, link string) error {
+//		query := "INSERT INTO MODULES (title,content,order_num,course_id,link) values ($1,$2,$3,$4,$5)"
+//		_, err := db.DB.Exec(ctx, query, title, content, order_num, course_id, link)
+//		return err
+//	}
 type OutModule struct {
 	Id        int    `json:"id"`
 	Course_id int    `json:"course_id"`
