@@ -48,3 +48,15 @@ func GetAllModules(ctx context.Context, c_id string) ([]OutModule, error) {
 	}
 	return allmodule, nil
 }
+func CreateModule(ctx context.Context, course_id int, title, content, link string) error {
+	var maxOrder int
+	err := db.DB.QueryRow(ctx, "SELECT COALESCE(MAX(order_num),0) FROM modules WHERE course_id=$1", course_id).Scan(&maxOrder)
+	if err != nil {
+		return err
+	}
+	order_num := maxOrder + 1
+
+	query := "INSERT INTO MODULES (title,content,order_num,course_id,link) values ($1,$2,$3,$4,$5)"
+	_, err = db.DB.Exec(ctx, query, title, content, order_num, course_id, link)
+	return err
+}

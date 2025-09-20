@@ -15,6 +15,13 @@ type Module struct {
 	Link      string `json:"link"`
 }
 
+type Module struct {
+	Course_id int    json:"course_id"
+	Title     string json:"title"
+	Content   string json:"content"
+	Link      string json:"link"
+}
+
 func CreateModuleHandler(c *gin.Context) {
 	var module_input Module
 	ctx := c.Request.Context()
@@ -25,7 +32,7 @@ func CreateModuleHandler(c *gin.Context) {
 		c.JSON(401, "Unauthorised Access")
 		return
 	}
-	err = CreateModule(ctx, module_input.Course_id, module_input.Order_num, module_input.Title, module_input.Content, module_input.Link)
+	err = CreateModule(ctx, module_input.Course_id, module_input.Title, module_input.Content, module_input.Link)
 	if err != nil {
 		c.JSON(400, err)
 		return
