@@ -11,12 +11,10 @@ import (
 func WhoamI(c *gin.Context) (schema.User, error) {
 	ctx := c.Request.Context()
 	token, err := c.Cookie("token")
-	fmt.Println(token)
 	if err != nil {
 		return schema.User{}, fmt.Errorf("token invalid")
 	}
 	email, err := jwt.Verify_JWT(token)
-	fmt.Println(email, err)
 	if err != nil {
 		return schema.User{}, fmt.Errorf("Invalid Token")
 	}

@@ -118,6 +118,7 @@ func ListCourses(c *gin.Context) {
 	// id := c.Query("inst_id")
 	query := "SELECT * FROM courses"
 	rows, err := db.DB.Query(ctx, query)
+	fmt.Println(rows)
 	if err != nil {
 		fmt.Println("Error fetching courses:", err)
 		c.JSON(500, gin.H{"error": "Failed to fetch courses"})

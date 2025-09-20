@@ -55,3 +55,24 @@ func GetModulesHandler(c *gin.Context) {
 	c.JSON(200, module)
 
 }
+func GetAllModulesHandler(c *gin.Context) {
+
+	ctx := c.Request.Context()
+	c_id := c.Query("c_id")
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(400, err)
+	}
+	if !helper.CheckIfEnrolled(ctx, user.Id, c_id) {
+		c.JSON(400, "Cant Access without enrolling ")
+		return
+	}
+	module, err := GetAllModules(ctx, c_id)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(400, err)
+		return
+	}
+	c.JSON(200, module)
+}

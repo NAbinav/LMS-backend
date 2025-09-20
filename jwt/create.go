@@ -23,7 +23,7 @@ func Create_JWT(email_id string) (string, error) {
 }
 
 func Verify_JWT(token_string string) (string, error) {
-	token, err := jwt.Parse(token_string, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(token_string, func(t *jwt.Token) (any, error) {
 		return secret_key, nil
 	})
 	if err != nil {

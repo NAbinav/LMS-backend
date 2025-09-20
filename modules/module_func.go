@@ -29,3 +29,22 @@ func GetModules(ctx context.Context, mod string, c_id string) (OutModule, error)
 	}
 	return module, nil
 }
+
+func GetAllModules(ctx context.Context, c_id string) ([]OutModule, error) {
+	query := "select * from modules where course_id = $1"
+	rows, err := db.DB.Query(ctx, query, c_id)
+	if err != nil {
+		return []OutModule{}, err
+	}
+	defer rows.Close()
+
+	var allmodule []OutModule
+	for rows.Next() {
+		var module OutModule
+		if err := rows.Scan(&module.Id, &module.Title, &module.Order_num, &module.Content, &module.Link); err != nil {
+			return []OutModule{}, err
+		}
+		allmodule = append(allmodule, module)
+	}
+	return allmodule, nil
+}

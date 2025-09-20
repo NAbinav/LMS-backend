@@ -40,7 +40,7 @@ func main() {
 
 		c.String(200, "Hello, World!")
 	})
-	r.GET("/role", handler.ListUserFromRole)
+	// r.GET("/role", handler.ListUserFromRole)
 	r.POST("/register", handler.RegisterUser)
 	r.POST("/login", handler.LoginHandler)
 	r.GET("/get_user", handler.Getuser)
@@ -72,6 +72,8 @@ func main() {
 
 	r.POST("/module", modules.CreateModuleHandler)
 	r.GET("/module", modules.GetModulesHandler)
+	r.GET("/allmodules", modules.GetAllModulesHandler)
+
 	r.GET("/quizqn", quizqn.AddQns)
 	r.Run(":8080")
 }
