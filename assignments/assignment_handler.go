@@ -44,11 +44,22 @@ func GetAssignmentHandler(c *gin.Context) {
 		return
 	}
 	var assignment []CustomAssignment
-	assignment, err = GetAssignment(ctx, user.Id)
-	fmt.Println(assignment)
-	if err != nil {
-		c.JSON(400, err)
-		return
+	if user.Role != "instructor" {
+		assignment, err = GetAssignment(ctx, user.Id)
+		fmt.Println(assignment)
+		if err != nil {
+			c.JSON(400, err)
+			return
+		}
+		c.JSON(200, assignment)
+	} else {
+		assignment, err = GetAssignmentFac(ctx, user.Id)
+		fmt.Println(assignment)
+		if err != nil {
+			c.JSON(400, err)
+			return
+		}
+		c.JSON(200, assignment)
+
 	}
-	c.JSON(200, assignment)
 }

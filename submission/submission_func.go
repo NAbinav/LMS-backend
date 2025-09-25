@@ -52,7 +52,6 @@ func AllSubmissions(ctx context.Context, a_id string) ([]CustomSubmission, error
 	defer rows.Close()
 	for rows.Next() {
 		var SingleSubmission CustomSubmission
-
 		if err := rows.Scan(&SingleSubmission.UserID, &SingleSubmission.URL, &SingleSubmission.SubmittedAt); err != nil {
 			return []CustomSubmission{}, err
 		}
