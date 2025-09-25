@@ -2,7 +2,7 @@ package quizqn
 
 import (
 	"dbms/schema"
-	"fmt"
+	// "fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,5 +10,5 @@ import (
 func AddQns(c *gin.Context) {
 	var arr []schema.QuizQuestion
 	c.ShouldBindJSON(&arr)
-	fmt.Println(arr)
+	AddQn_db(arr)
 }
