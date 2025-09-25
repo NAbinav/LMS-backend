@@ -65,6 +65,7 @@ func main() {
 	r.POST("/quiz", quiz.CreateQuizHandler)
 	r.GET("/quizid", quiz.GetAllQuizHandler)
 
+	r.GET("/assignments/:assignment_id/submissions", assignments.GetSubmissionsHandler)
 	r.POST("/assignment", assignments.CreateAssignmentHandler)
 	r.GET("/assignment", assignments.GetAssignmentHandler)
 	r.POST("/submissions", submission.NewSubmissionHandler)
@@ -77,5 +78,4 @@ func main() {
 	r.GET("/quizqn", quizqn.AddQns)
 	r.Run(":8080")
 
-	
 }

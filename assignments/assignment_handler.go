@@ -3,6 +3,8 @@ package assignments
 import (
 	"dbms/helper"
 	"fmt"
+	"strconv"
+
 	// "fmt"
 
 	"github.com/gin-gonic/gin"
@@ -62,4 +64,32 @@ func GetAssignmentHandler(c *gin.Context) {
 		c.JSON(200, assignment)
 
 	}
+}
+func GetSubmissionsHandler(c *gin.Context) {
+	ctx := c.Request.Context()
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	assignmentIDStr := c.Param("assignment_id") // expecting route like /assignments/:assignment_id/submissions
+	assignmentID, err := strconv.Atoi(assignmentIDStr)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "invalid assignment id"})
+		return
+	}
+
+	// instructors can see submissions for their courses
+	// students can see only their own submission
+	var submissions []CustomSubmission
+	if user.Role == "instructor" {
+		submissions, err = GetSubmissionsByAssignment(ctx, assignmentID)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	c.JSON(200, submissions)
 }

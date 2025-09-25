@@ -67,3 +67,59 @@ func GetAssignment(ctx context.Context, user_id int) ([]CustomAssignment, error)
 	}
 	return all_assignments, nil
 }
+
+type CustomSubmission struct {
+	Submission_id    int
+	Student_name     string
+	Course_name      string
+	Assignment_title string
+	Submission_text  string
+	Submitted_at     time.Time
+	Grade            float64
+	Status           string
+}
+
+func GetSubmissionsByAssignment(ctx context.Context, assignmentID int) ([]CustomSubmission, error) {
+	query := `
+		SELECT 
+			s.id AS submission_id,
+			u.name AS student_name,
+			c.title AS course_name,
+			a.title AS assignment_title,
+			s.submission_text,
+			s.submitted_at,
+			COALESCE(s.grade, 0) AS grade,
+			s.status
+		FROM submissions s
+		JOIN assignments a ON a.id = s.assignment_id
+		JOIN courses c ON c.id = a.course_id
+		JOIN users u ON u.id = s.user_id
+		WHERE s.assignment_id = $1 AND u.role = 'student';
+	`
+
+	rows, err := db.DB.Query(ctx, query, assignmentID)
+	if err != nil {
+		return []CustomSubmission{}, err
+	}
+	defer rows.Close()
+
+	var submissions []CustomSubmission
+	for rows.Next() {
+		var sub CustomSubmission
+		if err := rows.Scan(
+			&sub.Submission_id,
+			&sub.Student_name,
+			&sub.Course_name,
+			&sub.Assignment_title,
+			&sub.Submission_text,
+			&sub.Submitted_at,
+			&sub.Grade,
+			&sub.Status,
+		); err != nil {
+			fmt.Println(err)
+			return []CustomSubmission{}, err
+		}
+		submissions = append(submissions, sub)
+	}
+	return submissions, nil
+}
