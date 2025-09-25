@@ -58,7 +58,7 @@ func GetAssignment(ctx context.Context, user_id int) ([]CustomAssignment, error)
 	var all_assignments []CustomAssignment
 	for rows.Next() {
 		var SingleAssigment CustomAssignment
-		if err := rows.Scan(&SingleAssigment.Assi_id, &SingleAssigment.Course_name, &SingleAssigment.Assgn_title, &SingleAssigment.Description, &SingleAssigment.Due_date, &SingleAssigment.Max_points, &SingleAssigment.User_name); err != nil {
+		if err := rows.Scan(&SingleAssigment.Assi_id, &SingleAssigment.Course_name, &SingleAssigment.Assgn_title, &SingleAssigment.Due_date, &SingleAssigment.Max_points, &SingleAssigment.User_name); err != nil {
 			fmt.Println(err)
 			return []CustomAssignment{}, err
 		}
