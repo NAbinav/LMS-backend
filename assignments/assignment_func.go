@@ -30,7 +30,7 @@ type CustomAssignment struct {
 }
 
 func GetAssignmentFac(ctx context.Context, user_id int) ([]CustomAssignment, error) {
-	query := "SELECT a.id AS ass_id,c.title AS course_name,a.title AS assignment_title,a.due_date,a.max_points,u.name AS teacher_name FROM assignments a JOIN courses c ON c.id = a.course_id JOIN users u ON u.id = c.instructor_id WHERE u.id = $1;"
+	query := "SELECT a.id AS ass_id,c.title AS course_name,a.title AS assignment_title,a.description as description,a.due_date,a.max_points,u.name AS teacher_name FROM assignments a JOIN courses c ON c.id = a.course_id JOIN users u ON u.id = c.instructor_id WHERE u.id = $1;"
 	rows, err := db.DB.Query(ctx, query, user_id)
 	if err != nil {
 		return []CustomAssignment{}, err
@@ -39,7 +39,7 @@ func GetAssignmentFac(ctx context.Context, user_id int) ([]CustomAssignment, err
 	var all_assignments []CustomAssignment
 	for rows.Next() {
 		var SingleAssigment CustomAssignment
-		if err := rows.Scan(&SingleAssigment.Assi_id, &SingleAssigment.Course_name, &SingleAssigment.Assgn_title, &SingleAssigment.Due_date, &SingleAssigment.Max_points, &SingleAssigment.User_name); err != nil {
+		if err := rows.Scan(&SingleAssigment.Assi_id, &SingleAssigment.Course_name, &SingleAssigment.Assgn_title, &SingleAssigment.Description, &SingleAssigment.Due_date, &SingleAssigment.Max_points, &SingleAssigment.User_name); err != nil {
 			fmt.Println(err)
 			return []CustomAssignment{}, err
 		}
