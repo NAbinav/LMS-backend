@@ -19,9 +19,28 @@ func CheckIfAssigned(ctx context.Context, user_id int, assignment_id int) bool {
 	return user_id == query_user
 }
 
-func AssignmentSubmit(ctx context.Context, user_id int, a_id int, submission_text string) error {
-	query := "insert into submissions (user_id,assignment_id,submission_text,submitted_at) values ($1,$2,$3,$4)"
-	_, err := db.DB.Exec(ctx, query, user_id, a_id, submission_text, time.Now())
+func AssignmentSubmit(ctx context.Context, userID int, assignmentID int, submissionText string) error {
+	// 1. Get assignment due_date
+	var dueDate time.Time
+	err := db.DB.QueryRow(ctx, `SELECT due_date FROM assignments WHERE id = $1`, assignmentID).Scan(&dueDate)
+	if err != nil {
+		return fmt.Errorf("failed to fetch due date: %w", err)
+	}
+
+	now := time.Now()
+
+	query := `INSERT INTO submissions (user_id, assignment_id, submission_text, submitted_at, status) VALUES ($1, $2, $3, $4, $5)`
+	status := "submitted"
+	if now.After(dueDate) {
+		status = "late"
+	}
+	_, err = db.DB.Exec(ctx, query, userID, assignmentID, submissionText, now, status)
+	return err
+}
+
+func GradeAssignment_db(ctx context.Context, submissionID int, grade float64, teacherID int) error {
+	query := `UPDATE submissions SET grade = $1,graded_at = $2,graded_by = $3 WHERE id = $4;`
+	_, err := db.DB.Exec(ctx, query, grade, time.Now(), teacherID, submissionID)
 	return err
 }
 
@@ -58,4 +77,14 @@ func AllSubmissions(ctx context.Context, a_id string) ([]CustomSubmission, error
 		Submissions = append(Submissions, SingleSubmission)
 	}
 	return Submissions, err
+}
+
+func HasSubmitted(ctx context.Context, userID int, assignmentID int) (bool, error) {
+	var exists bool
+	query := "SELECT EXISTS (SELECT 1 FROM submissions WHERE user_id = $1 AND assignment_id = $2)"
+	err := db.DB.QueryRow(ctx, query, userID, assignmentID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
 }
