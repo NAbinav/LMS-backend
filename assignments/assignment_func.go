@@ -8,8 +8,7 @@ import (
 )
 
 func CreateAssignment(ctx context.Context, course_id int, title string, description string, due_date string, max_points int) error {
-	// Parse due_date string into time.Time
-	parsedDue, err := time.Parse("2006-01-02T15:04", due_date) // from HTML datetime-local input
+	parsedDue, err := time.Parse("2006-01-02T15:04", due_date)
 	if err != nil {
 		fmt.Println("Error parsing due date:", err)
 		return err
@@ -27,7 +26,7 @@ type CustomAssignment struct {
 	Assi_id     int       `json:"id"`
 	Course_name string    `json:"course_name"`
 	Assgn_title string    `json:"assignment_title"`
-	Due_date    time.Time `json:"due_date"` // time.Time for safe scan
+	Due_date    time.Time `json:"due_date"`
 	Max_points  int       `json:"max_points"`
 	User_name   string    `json:"teacher_name"`
 	Description string    `json:"description"`

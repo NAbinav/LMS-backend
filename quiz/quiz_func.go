@@ -14,6 +14,8 @@ package quiz
 import (
 	"context"
 	"dbms/db"
+	"fmt"
+	"time"
 	// "dbms/helper"
 	// "dbms/schema"
 	//
@@ -56,4 +58,50 @@ func AllQuizEnrolled(ctx context.Context, user_id int) []CustomQuizEnrolled {
 func GetQuizId(q_id int, user_id int) (CustomQuizEnrolled, error) {
 
 	return CustomQuizEnrolled{}, nil
+}
+
+type CustomQuiz struct {
+	Quiz_id     int       `json:"id"`
+	Course_name string    `json:"course_name"`
+	Quiz_title  string    `json:"quiz_title"`
+	Time_limit  int       `json:"time_limit"`
+	Created_at  time.Time `json:"created_at"`
+}
+
+func GetQuizzesByTeacher(ctx context.Context, teacherID int) ([]CustomQuiz, error) {
+	query := `
+	SELECT 
+		q.id AS quiz_id,
+		c.title AS course_name,
+		q.title AS quiz_title,
+		COALESCE(q.time_limit, 0) AS time_limit,
+		q.created_at
+	FROM quizzes q
+	JOIN courses c ON c.id = q.course_id
+	WHERE c.instructor_id = $1;
+	`
+
+	rows, err := db.DB.Query(ctx, query, teacherID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var quizzes []CustomQuiz
+	for rows.Next() {
+		var q CustomQuiz
+		if err := rows.Scan(
+			&q.Quiz_id,
+			&q.Course_name,
+			&q.Quiz_title,
+			&q.Time_limit,
+			&q.Created_at,
+		); err != nil {
+			fmt.Println("Scan error:", err)
+			return nil, err
+		}
+		quizzes = append(quizzes, q)
+	}
+
+	return quizzes, nil
 }

@@ -3,6 +3,9 @@ package quiz
 import (
 	// "context"
 	"dbms/helper"
+	// "dbms/quiz"
+	"fmt"
+
 	// "dbms/schema"
 	"github.com/gin-gonic/gin"
 )
@@ -15,15 +18,15 @@ func CreateQuizHandler(c *gin.Context) {
 		Max_attempts int    `json:"max_attempts"`
 		Time_limit   int    `json:"time_limit"`
 	}
-	user, err := helper.WhoamI(c)
-	if err != nil {
-		c.JSON(401, "Not Authenticated to create quiz")
-	}
-	if !helper.CheckRole(c, "instructor") || !helper.CheckValidFaculty(ctx, user.Id, quiz_input.Course_id) {
-		c.JSON(401, "Not Authenticated to create quiz")
-		return
-	}
-	err = c.ShouldBindJSON(&quiz_input)
+	// user, err := helper.WhoamI(c)
+	// if err != nil {
+	// 	c.JSON(401, "Not Authenticated to create quiz")
+	// }
+	// if !helper.CheckRole(c, "instructor") {
+	// 	c.JSON(401, "Not Authenticated to create quiz")
+	// 	return
+	// }
+	err := c.ShouldBindJSON(&quiz_input)
 	if err != nil {
 		c.JSON(400, err)
 		return
@@ -45,8 +48,18 @@ func GetAllQuizHandler(c *gin.Context) {
 		c.JSON(400, "Not available")
 		return
 	}
-	quiz := AllQuizEnrolled(ctx, user.Id)
-	c.JSON(200, quiz)
+	if user.Role == "student" {
+		quiz := AllQuizEnrolled(ctx, user.Id)
+		c.JSON(200, quiz)
+	} else {
+		quiz, err := GetQuizzesByTeacher(ctx, user.Id)
+		if err != nil {
+			fmt.Println(err)
+			c.AbortWithError(400, err)
+			return
+		}
+		c.JSON(200, quiz)
+	}
 }
 
 // func GetQuizHandler(c *gin.Context) {
