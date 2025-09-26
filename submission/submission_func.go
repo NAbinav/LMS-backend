@@ -3,6 +3,7 @@ package submission
 import (
 	"context"
 	"dbms/db"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -38,10 +39,21 @@ func AssignmentSubmit(ctx context.Context, userID int, assignmentID int, submiss
 	return err
 }
 
-func GradeAssignment_db(ctx context.Context, submissionID int, grade float64, teacherID int) error {
-	query := `UPDATE submissions SET grade = $1,graded_at = $2,graded_by = $3 WHERE id = $4;`
-	_, err := db.DB.Exec(ctx, query, grade, time.Now(), teacherID, submissionID)
-	return err
+func GradeAssignment_db(ctx context.Context, submissionID int, grade int, teacherID int) error {
+	query := `UPDATE submissions SET grade = $1, graded_at = $2, graded_by = $3 WHERE id = $4;`
+	result, err := db.DB.Exec(ctx, query, grade, time.Now(), teacherID, submissionID)
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+
+	// Check if any row was actually updated
+	rowsAffected := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.New("submission not found")
+	}
+
+	return nil
 }
 
 func CourseidOfAssignment(ctx context.Context, a_id string) (int, error) {
@@ -87,4 +99,35 @@ func HasSubmitted(ctx context.Context, userID int, assignmentID int) (bool, erro
 		return false, err
 	}
 	return exists, nil
+}
+
+type Submission struct {
+	AssignmentID int        `json:"assignment_id"`
+	SubmittedAt  time.Time  `json:"submitted_at"`
+	Grade        *float64   `json:"grade,omitempty"`
+	GradedAt     *time.Time `json:"graded_at,omitempty"`
+	GradedBy     *int       `json:"graded_by,omitempty"`
+}
+
+func GetUserSubmissions(ctx context.Context, userID int) ([]Submission, error) {
+	rows, err := db.DB.Query(ctx,
+		`SELECT assignment_id, submitted_at, grade, graded_at, graded_by
+		 FROM submissions
+		 WHERE user_id = $1`,
+		userID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var submissions []Submission
+	for rows.Next() {
+		var s Submission
+		if err := rows.Scan(&s.AssignmentID, &s.SubmittedAt, &s.Grade, &s.GradedAt, &s.GradedBy); err != nil {
+			return nil, err
+		}
+		submissions = append(submissions, s)
+	}
+	return submissions, nil
 }

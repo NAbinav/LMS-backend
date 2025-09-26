@@ -7,15 +7,10 @@ import (
 	"time"
 )
 
-func CreateAssignment(ctx context.Context, course_id int, title string, description string, due_date string, max_points int) error {
-	parsedDue, err := time.Parse("2006-01-02T15:04", due_date)
-	if err != nil {
-		fmt.Println("Error parsing due date:", err)
-		return err
-	}
+func CreateAssignment(ctx context.Context, course_id int, title string, description string, due_date time.Time, max_points int) error {
 
 	query := "INSERT INTO assignments (course_id, title, description, due_date, max_points) VALUES ($1, $2, $3, $4, $5)"
-	_, err = db.DB.Exec(ctx, query, course_id, title, description, parsedDue, max_points)
+	_, err := db.DB.Exec(ctx, query, course_id, title, description, due_date, max_points)
 	if err != nil {
 		fmt.Println("DB error:", err)
 	}

@@ -70,7 +70,9 @@ func main() {
 	r.GET("/assignment", assignments.GetAssignmentHandler)
 	r.POST("/submissions", submission.NewSubmissionHandler)
 	r.GET("/submissions", submission.GetAllSubmissions)
-	r.POST("/submissions", submission.GetAllSubmissions)
+	r.GET("/submitted", submission.GetUserSubmissionsHandler)
+	r.POST("/grade", submission.GradeAssignment)
+	// r.GET("/")
 
 	r.POST("/module", modules.CreateModuleHandler)
 	r.GET("/module", modules.GetModulesHandler)

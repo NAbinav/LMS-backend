@@ -4,6 +4,7 @@ import (
 	"dbms/helper"
 	"fmt"
 	"strconv"
+	"time"
 
 	// "fmt"
 
@@ -13,11 +14,11 @@ import (
 func CreateAssignmentHandler(c *gin.Context) {
 	ctx := c.Request.Context()
 	var Assignment struct {
-		Course_id   int    `json:"course_id"`
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Due_date    string `json:"due_date"`
-		Max_points  int    `json:"max_points"`
+		Course_id   int       `json:"course_id"`
+		Title       string    `json:"title"`
+		Description string    `json:"description"`
+		Due_date    time.Time `json:"due_date"`
+		Max_points  int       `json:"max_points"`
 	}
 	err := c.ShouldBindJSON(&Assignment)
 	if err != nil {

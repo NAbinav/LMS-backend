@@ -17,6 +17,7 @@ type NewSubmission struct {
 }
 type Grading struct {
 	Grade int `json:"grade"`
+	Sid   int `json:"s_id"`
 }
 
 func NewSubmissionHandler(c *gin.Context) {
@@ -24,6 +25,7 @@ func NewSubmissionHandler(c *gin.Context) {
 	var Submission NewSubmission
 	err := c.ShouldBindJSON(&Submission)
 	if err != nil {
+		fmt.Println(err)
 		c.AbortWithError(400, err)
 	}
 	user, err := helper.WhoamI(c)
@@ -34,11 +36,13 @@ func NewSubmissionHandler(c *gin.Context) {
 	fmt.Println(user, Submission.AssignmentId)
 	isAssigned := CheckIfAssigned(ctx, user.Id, Submission.AssignmentId)
 	if !isAssigned {
+		fmt.Println(err)
 		c.JSON(401, "Not Assigned")
 		return
 	}
 	err = AssignmentSubmit(ctx, user.Id, Submission.AssignmentId, Submission.SubmissionText)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, err)
 		return
 	}
@@ -46,6 +50,7 @@ func NewSubmissionHandler(c *gin.Context) {
 
 func GetAllSubmissions(c *gin.Context) {
 	ctx := c.Request.Context()
+
 	a_id := c.Query("a_id")
 	c_id, err := CourseidOfAssignment(ctx, a_id)
 	if err != nil {
@@ -73,24 +78,27 @@ func GradeAssignment(c *gin.Context) {
 	var Grade Grading
 	err := c.ShouldBindJSON(&Grade)
 	if err != nil {
-		c.AbortWithError(400, err)
+		fmt.Print(err)
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
 	}
+
 	user, err := helper.WhoamI(c)
 	if err != nil {
-		c.JSON(200, err)
+		c.JSON(400, gin.H{"error": "Authentication error"})
 		return
 	}
-	fmt.Println(user, Grade.Grade)
-	isAssigned := CheckIfAssigned(ctx, user.Id, Grade.Grade)
-	if !isAssigned {
-		c.JSON(401, "Not Assigned")
-		return
-	}
-	err = GradeAssn_db(ctx, user.Id, Grade.Grade)
+
+	fmt.Printf("Received Grade: %d, S_id: %d\n", Grade.Grade, Grade.Sid)
+
+	err = GradeAssignment_db(ctx, Grade.Sid, Grade.Grade, user.Id)
 	if err != nil {
-		c.JSON(400, err)
+		fmt.Print(err)
+		c.JSON(400, gin.H{"error": "Failed to grade"})
 		return
 	}
+
+	c.JSON(200, gin.H{"message": "Grade submitted successfully"})
 }
 
 func CheckSubmissionHandler(c *gin.Context) {
@@ -110,4 +118,21 @@ func CheckSubmissionHandler(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"submitted": submitted})
+}
+
+func GetUserSubmissionsHandler(c *gin.Context) {
+	user, err := helper.WhoamI(c)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	submissions, err := GetUserSubmissions(c.Request.Context(), user.Id)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "db error"})
+		return
+	}
+
+	c.JSON(200, submissions)
 }
